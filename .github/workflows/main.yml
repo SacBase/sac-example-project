@@ -1,0 +1,75 @@
+# The following configuration is used to setup GitHub Actions
+# for building (and running unit tests) on pushes and PRs.
+# At the moment, we build on two runner types: Linux and MacOS,
+# specific version information can be found further below.
+name: Build On Changes
+
+# run action on all pushes and pull_request for all branches
+on: [push, pull_request]
+
+# high-level constants
+env:
+  BASE_URL: https://gitlab.science.ru.nl/sac-group/sac-packages/-/raw/master/latest/weekly
+
+# action listing, all jobs run in parallel
+jobs:
+  build_linux:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Get HEAD and submodules
+        uses: actions/checkout@v2
+        with:
+          # we need to get tag information
+          fetch-depth: 0
+          # we need to get all submodules
+          submodules: 'recursive'
+      - name: Install sac2c-basic
+        run: |
+          wget ${BASE_URL}/Ubl18/sac2c-basic.deb
+          sudo apt install ./sac2c-basic.deb
+          sac2c -V
+      - name: Create build dir
+        run: |
+          cmake -E make_directory ${{runner.workspace}}/build
+          mkdir $HOME/.sac2crc
+      - name: Configure build-system
+        shell: bash
+        working-directory: ${{runner.workspace}}/build
+        run: cmake -DLINKSETSIZE=200 $GITHUB_WORKSPACE
+      - name: Build
+        shell: bash
+        working-directory: ${{runner.workspace}}/build
+        run: cmake --build . -j 2
+  build_mac:
+    runs-on: macos-10.15
+    steps:
+      - name: Get HEAD and submodules
+        uses: actions/checkout@v2
+        with:
+          # we need to get tag information
+          fetch-depth: 0
+          # we need to get all submodules
+          submodules: 'recursive'
+      - name: Install sac2c-basic
+        run: |
+          wget ${BASE_URL}/MacOS/sac2c-basic.pkg
+          sudo installer -pkg ./sac2c-basic.pkg -target /
+          sac2c -V
+      - name: Set XCode version
+        run: |
+          # this ensures we are using the same Xcode version that we compiled sac2c against
+          sudo xcode-select -switch "/Applications/Xcode_12.app"
+          # we need to rewrite sysroot path to use specific Xcode version
+          sudo find /usr/local/share -type f -name 'sac2crc_*' -execdir sed -i.bak 's/Xcode\.app/Xcode_12\.app/g' {} \;
+      - name: Create build dir
+        run: |
+          cmake -E make_directory ${{runner.workspace}}/build
+          mkdir $HOME/.sac2crc
+      - name: Configure build-system
+        shell: bash
+        working-directory: ${{runner.workspace}}/build
+        run: cmake -DLINKSETSIZE=200 ${GITHUB_WORKSPACE}
+      - name: Build
+        shell: bash
+        working-directory: ${{runner.workspace}}/build
+        run: cmake --build . -j 2
