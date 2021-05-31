@@ -1,0 +1,6 @@
+module Example;
+
+export all;
+
+int function_a (int a) { return a; }
+int function_b (int[+] a) { return _sel_VxA_ (_mul_SxV_ (0, _shape_A_ (a)), a); }

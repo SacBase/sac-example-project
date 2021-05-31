@@ -1,0 +1,9 @@
+use Example: all;
+
+int main () {
+
+  a = [1,2,3,4,5];
+  b = function_b (a);
+
+  return (_toi_S_ (_eq_SxS_ (function_a (_sel_VxA_ ([0], a)), b)));
+}
