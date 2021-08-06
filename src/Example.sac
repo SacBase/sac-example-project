@@ -1,6 +1,22 @@
+/**
+ * @brief This module is an example
+ */
 module Example;
 
 export all;
 
+/**
+ * @brief function acts as identity for type int[]
+ *
+ * @param a Some scalar integer value
+ * @return The scalar integer value
+ */
 int function_a (int a) { return a; }
+
+/**
+ * @brief function takes some vector or array and returns an element at index 1
+ *
+ * @param a Some integer array or vector
+ * @return First element of array or vector
+ */
 int function_b (int[+] a) { return _sel_VxA_ (_mul_SxV_ (0, _shape_A_ (a)), a); }

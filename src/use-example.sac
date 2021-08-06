@@ -1,3 +1,6 @@
+/**
+ * @brief this program uses the Example module
+ */
 use Example: all;
 
 int main () {

@@ -1,11 +1,11 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 3.17)
+CMAKE_MINIMUM_REQUIRED (VERSION 3.19)
 
 # This is an example project that builds both a SaC module and a SaC program.
 # The program depends on the module; these are located under `src/`.
 # It is important that create the sac2crc file for this project, otherwise
 # its tricky to correctly link the SaC modules with the program.
 
-PROJECT (sac-example-module)
+PROJECT (sac-example-module VERSION 1.1.0 HOMEPAGE_URL "https://sac-home.org/")
 
 # Where the compiled sac modules result
 SET (DLL_BUILD_DIR  "${PROJECT_BINARY_DIR}/lib")
